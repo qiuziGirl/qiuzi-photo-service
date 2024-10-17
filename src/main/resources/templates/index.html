@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QiuZi电子相册</title>
+    <link rel="stylesheet" type="text/css" href="/bootstrap-3.3.5/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/default.css">
+    <style type="text/css">
+        body {
+            background-color: transparent;
+            background-image: url("https://images.pexels.com/photos/1804035/pexels-photo-1804035.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+        }
+    </style>
+</head>
+<body>
+<div class="col-md-10 col-md-offset-1" style="background-color: #F2F2F2;box-shadow:
+         inset 1px -1px 1px #444, inset -1px 1px 1px #444; margin-top: 100px; height: 600px">
+
+    <!--导航栏-->
+    <nav class="navbar navbar-default" style="margin-top: 30px" role="navigation">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">相册</a></li>
+            <li><a href="#">照片</a></li>
+            <li><a href="#">视频</a></li>
+        </ul>
+    </nav>
+
+    <!--按钮组-->
+    <div>
+        <!-- 上传照片/视频按钮 -->
+        <button type="button" class="btn btn-info btn-lg" style="margin-right:10px;" data-toggle="modal"
+                data-target="#upload-modal" id="upload-btn">
+            <span class="glyphicon glyphicon-circle-arrow-up"/>
+            上传照片/视频
+        </button>
+        <!-- 创建相册按钮 -->
+        <button type="button" class="btn btn-default btn-lg " id="create-btn" data-toggle="modal"
+                data-target="#create-modal">创建相册
+        </button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                更多
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li id="mine" data-toggle="modal" data-target="#mine-modal"><a>个人中心</a></li>
+                <li class="divider"></li>
+                <li id="quit" data-toggle="modal" data-target="#quit-modal"><a href="#">退出登录</a></li>
+            </ul>
+        </div>
+        <!--<button id="test">测试按钮</button>-->
+
+    </div>
+
+    <!--相册排列-->
+    <div class="row" style="margin-top: 50px">
+        <div th:each="album:${albums}">
+            <div class="col-sm-6 col-md-2">
+                <a th:href="@{'/album/album_detail/' + ${album.id}}" class="thumbnail">
+                    <img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" th:alt="${album.albumName}">
+                    <p th:text="${album.albumName}"></p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--上传照片/视频模态框-->
+<div class="modal modal-fade" id="upload-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">上传照片/视频</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline" method="post" action="/picture/uploadPicture" role="form" enctype="multipart/form-data">
+                    <span>上传到：</span>
+                    <select class="form-control" id="select" name="select">
+                        <div th:each="album: ${albums}">
+                            <option th:value="${album.id}" th:text="${album.albumName}"></option>
+                        </div>
+                    </select>
+                    <br />
+                    <br />
+                    <input type="file" name="file" class="btn"/>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="upload">添加</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--创建相册模态框-->
+<div class="modal modal-fade" id="create-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">创建相册</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="event-index" value="">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">相册名称</label>
+                        <div class="col-sm-7">
+                            <input name="album-name" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">相册描述</label>
+                        <div class="col-sm-7">
+                            <textarea id="album-description" name="album-description" class="form-control" rows="3"
+                                      placeholder="说说这个相册的故事...（非必填）"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="create-album">添加</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--退出登录模态框-->
+<div class="modal modal-fade" id="quit-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">退出登录</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="event-index" value="">
+                <span style="color: #df6659">你确定退出登录吗？</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirm_quit" data-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+    var _userId = [[${session.loginUser}]];
+    var albums = [];
+
+    /**
+     * 根据用户id获取相册信息
+     */
+    $.ajax({
+        type: 'Get',
+        url: 'album/findAll',
+        data: {userId: _userId},
+        cache: false,
+        success: function (data) {
+            console.log(data);
+            if (data.length > 0) {
+                albums = data;
+            } else {
+                console.log('获取用户相册信息失败');
+            }
+        }
+    })
+
+    /**
+     * 创建相册
+     */
+    $("#create-album").click(function () {
+        // 获取session中的用户id
+        var _userId = [[${session.loginUser}]];
+        var _id = $('#create-modal input[name="event-index"]').val();
+        var _albumName = $('#create-modal input[name="album-name"]').val();
+        var __albumDescription = $("#album-description").val();
+        $.ajax({
+            type: 'POST',
+            url: '/album/createAlbum',
+            data: {id: _id, userId: _userId, albumName: _albumName, albumDescription: __albumDescription},
+            cache: false,
+            success: function (data) {
+                if (data == 1) {
+                    window.location.href = '/index/' + _userId;
+                    alert("创建相册成功");
+                } else {
+                    alert("相册已存在");
+                }
+                $('#create-album').modal('hide');
+            }
+        })
+    })
+
+    $("#mine").click(function () {
+        console.log("hello");
+        window.location.href = '/user/mine/' + _userId;
+    })
+
+
+    /**
+     * 用户退出登录
+     */
+    $("#confirm_quit").click(function () {
+        window.location.href = '/';
+    })
+
+
+    /**
+     * 测试按钮
+     */
+    $("#test").click(function () {
+        console.log("hello");
+        console.log($("#select option:selected").attr("id"));
+    })
+
+
+    $("#upload").click(function () {
+        // $.ajax({
+        //     type: 'POST',
+        //     url:
+        // })
+    })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" type="text/css" href="/bootstrap-3.3.5/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/default.css">
+    <style type="text/css">
+        body {
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="alert alert-success" style="text-align: center">
+        欢迎你，
+        <strong th:text="${user.userName}"></strong>
+    </div>
+</div>
+
+<div th:text="${user}"></div>
+
+</body>
+</html>

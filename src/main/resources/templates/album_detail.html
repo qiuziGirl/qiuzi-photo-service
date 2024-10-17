@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相册详情</title>
+    <link rel="stylesheet" type="text/css" href="/bootstrap-3.3.5/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/default.css">
+    <style type="text/css">
+        body {
+            background-color: transparent;
+            background-image: url("https://images.pexels.com/photos/1804035/pexels-photo-1804035.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+        }
+    </style>
+</head>
+<body>
+<div class="col-md-10 col-md-offset-1" style="background-color: #F2F2F2;
+box-shadow: inset 1px -1px 1px #444, inset -1px 1px 1px #444; margin-top: 100px; height: 600px">
+
+    <!--导航栏-->
+    <nav class="navbar navbar-default" style="margin-top: 30px" role="navigation">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">相册</a></li>
+            <li><a href="#">照片</a></li>
+            <li><a href="#">视频</a></li>
+        </ul>
+    </nav>
+
+    <!--按钮组-->
+    <div>
+        <!-- 上传照片/视频按钮 -->
+        <button type="button" class="btn btn-info" style="margin-right:10px;" data-toggle="modal"
+                data-target="#upload-modal" id="upload-btn">
+            <span class="glyphicon glyphicon-circle-arrow-up"/>
+            上传照片/视频
+        </button>
+        <button type="button" class="btn btn-default" style="margin-right: 10px">批量管理</button>
+        <!-- 更多按钮 -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                更多
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li id="edit_album" data-toggle="modal" data-target="#edit-album-modal"><a>编辑相册</a></li>
+                <li class="divider"></li>
+                <li id="delete_album" data-toggle="modal" data-target="#delete-album-modal"><a>删除相册</a></li>
+                <li class="divider"></li>
+                <li id="fare_album" data-toggle="modal" data-target="#share-album-modal"><a href="#">分享</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!--照片排列-->
+    <div class="row" style="margin-top: 50px">
+        <div th:each="picture:${pictures}">
+            <div class="col-sm-3 col-md-2">
+                <a class="thumbnail" style="border-width: 5px; width: 240px; height: 180px">
+                    <!--<div class="btn-group" style="margin-left: 180px">-->
+                        <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">-->
+                            <!--<span class="caret"></span>-->
+                        <!--</button>-->
+                        <!--<ul class="dropdown-menu" role="menu">-->
+                            <!--<li id="edit_" data-toggle="modal" data-target="#edit-album-modal"><a>编辑相册</a></li>-->
+                            <!--<li class="divider"></li>-->
+                            <!--<li id="delete_" data-toggle="modal" data-target="#delete-album-modal"><a>删除相册</a></li>-->
+                            <!--<li class="divider"></li>-->
+                            <!--<li id="fare_" data-toggle="modal" data-target="#share-album-modal"><a href="#">分享</a>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                    <img th:src="'/img/' + ${picture.pictureName}" th:alt="${picture.pictureName}">
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--上传照片/视频模态框-->
+<div class="modal modal-fade" id="upload-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">
+                    上传照片/视频
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline" role="form">
+                    <span>上传到：</span>
+                    <select class="form-control">
+                        <option>同学</option>
+                        <option>家人</option>
+                        <option>朋友</option>
+                    </select>
+                    <div class="form-group">
+                        <input type="file" class="btn btn-info"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="upload">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--编辑相册模态框-->
+<div class="modal modal-fade" id="edit-album-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">编辑相册信息</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="event-index" value="">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">相册名称</label>
+                        <div class="col-sm-7">
+                            <input id="album-name" name="album-name" type="text" class="form-control" placeholder="相册名称"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">相册描述</label>
+                        <div class="col-sm-7">
+                            <textarea id="album-description" name="album-description" class="form-control" rows="3"
+                                      placeholder="说说这个相册的故事...（非必填）"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirm_edit_album">确认</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--删除相册提醒模态框-->
+<div class="modal modal-fade" id="delete-album-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">删除提醒</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="event-index" value="">
+                <span style="color: #df6659">确定删除本相册，一旦删除将无法复原！！！</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirm_delete_album">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--分享相册模态框-->
+<div class="modal modal-fade" id="share-album-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">分享相册</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="event-index" value="">
+                <span style="color: #df6659">分享功能已被腾讯屏蔽！！！</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirm_share_album" data-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+    /**
+     * 获取当前相册信息
+     * 1、获取传递过来的相册id
+     * 2、进行信息填充
+     */
+    var _id = [[${albumId}]];
+    console.log(_id);
+    var album = '';
+    $.ajax({
+        type: 'POST',
+        url: '/album/findAlbumByAlbumId',
+        data: {id: _id},
+        cache: false,
+        success: function (data) {
+            console.log('albumName:' + data);
+            if (data != null) {
+                album = data;
+                document.getElementById("album-name").value = album.albumName;
+                document.getElementById("album-description").value = album.albumDescription;
+            } else {
+                console.log("获取当前相册数据失败！！！")
+            }
+        }
+    })
+
+
+    /**
+     * 编辑相册信息
+     */
+    $("#confirm_edit_album").click(function () {
+        var _albumName = $('#edit-album-modal input[name="album-name"]').val();
+        var _albumDescription = $("#album-description").val();
+        $.ajax({
+            type: 'POST',
+            url: '/album/findAlbumByAlbumName',
+            data: {albumName: _albumName},
+            cache: false,
+            success: function (data) {
+                if (data = null || _albumName == album.albumName) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/album/updateAlbum',
+                        data: {id: _id, albumName: _albumName, albumDescription: _albumDescription},
+                        cache: false,
+                        success: function (data) {
+                            if (data == 1) {
+                                window.location.href = '/album/album_detail?id=' + _id;
+                                alert("更新相册信息成功！");
+                            } else {
+                                alert("更新相册失败！");
+                            }
+                        }
+                    })
+                } else {
+                    alert("该相册名已被占用，请填写其他相册名！");
+                }
+            }
+        })
+    })
+
+    /**
+     * 删除相册
+     */
+    $("#confirm_delete_album").click(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/album/deleteAlbum',
+            data: {id: _id},
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data == 0) {
+                    window.location.href = '/index';
+                    alert("删除相册成功！");
+                } else {
+                    alert("删除相册失败！");
+                }
+            }
+        })
+    })
+
+    /**
+     * 获取URL中参数的值
+     * @param name
+     * @returns {string}
+     */
+    function getQueryString(name) {
+        var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+</script>
+</html>
