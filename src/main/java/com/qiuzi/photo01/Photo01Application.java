@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.unit.DataSize;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -23,9 +24,9 @@ public class Photo01Application {
    public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         // 单个数据大小
-        factory.setMaxFileSize("20MB");
+        factory.setMaxFileSize(DataSize.ofMegabytes(20));
         // 总上传数据大小
-        factory.setMaxRequestSize("100MB");
+        factory.setMaxRequestSize(DataSize.ofMegabytes(100));
         return factory.createMultipartConfig();
     }
 
