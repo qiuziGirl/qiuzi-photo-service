@@ -1,8 +1,8 @@
 package com.qiuzi.photo01.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
+import com.alibaba.druid.support.jakarta.StatViewServlet;
+import com.alibaba.druid.support.jakarta.WebStatFilter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -26,8 +26,8 @@ public class DruidConfig {
     }
 
     @Bean
-    public ServletRegistrationBean servletRegistrationBean() {
-        ServletRegistrationBean bean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+    public ServletRegistrationBean<StatViewServlet> servletRegistrationBean() {
+        ServletRegistrationBean<StatViewServlet> bean = new ServletRegistrationBean<>(new StatViewServlet(), "/druid/*");
         Map<String, String> initParams = new HashMap<>();
         initParams.put("loginUsername", "admin");
         initParams.put("loginPassword", "123456");
@@ -37,8 +37,8 @@ public class DruidConfig {
 
     // 配置一个 web 监控的 filter
     @Bean
-    public FilterRegistrationBean webStatFilter() {
-        FilterRegistrationBean bean = new FilterRegistrationBean();
+    public FilterRegistrationBean<WebStatFilter> webStatFilter() {
+        FilterRegistrationBean<WebStatFilter> bean = new FilterRegistrationBean<>();
         bean.setFilter(new WebStatFilter());
         Map<String, String> initParams = new HashMap<>();
         initParams.put("exclusions", "*.js,*.css,*.png,/druid/*");
